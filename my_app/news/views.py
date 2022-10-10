@@ -4,7 +4,6 @@ from .models import News, Category
 
 
 # Create your views here.
-
 def index(request):
     news = News.objects.all()
     categories = Category.objects.all()
