@@ -39,7 +39,6 @@
                     Category: {{item.category}}
                 </div>
                 <div class="card-body">
-<<<<<<< HEAD
                     <div class="media">
                         {% if item.photo %}
                         <img src="{{ item.photo.url }}" alt="" width="350" class="mr-3">
@@ -48,17 +47,12 @@
                         {% endif %}
                         <div class="meida-body">
                             <h5 class="card-title">{{item.title}}</h5>
+                            {% autoescape off %}
                             <p class="card-text">{{item.content|safe|linebreaks|truncatewords:50}}</p>
+                            {% endautoescape %}
                             <a href="#" class="btn btn-primary">Read more...</a>
                         </div>
                     </div>
-=======
-                    <h5 class="card-title {% cycle 'text-danger'  'text-success' %}">{{item.title}}</h5>
-                    {% autoescape off %}
-                    <p class="card-text">{{item.content}}</p>
-                    {% endautoescape %}
-                    <a href="#" class="btn btn-primary">Read more...</a>
->>>>>>> 7f571fe2fd9303472b5767ada870de802f0d533b
                 </div>
                 <div class="card-footer text-muted">
                     {{item.created_at|date:"Y-m-d H:i:s"}}
