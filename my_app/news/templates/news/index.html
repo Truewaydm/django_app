@@ -32,11 +32,14 @@
             {% for item in news %}
             <div class="card mb-3">
                 <div class="card-header">
+                    {{forloop.counter}}
                     Category: {{item.category}}
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">{{item.title}}</h5>
+                    <h5 class="card-title {% cycle 'text-danger'  'text-success' %}">{{item.title}}</h5>
+                    {% autoescape off %}
                     <p class="card-text">{{item.content}}</p>
+                    {% endautoescape %}
                     <a href="#" class="btn btn-primary">Read more...</a>
                 </div>
                 <div class="card-footer text-muted">
