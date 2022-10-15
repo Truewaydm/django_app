@@ -18,7 +18,7 @@ class HomeNews(ListView):
         return context
 
     def get_queryset(self):
-        return News.objects.filter(is_published=True)
+        return News.objects.filter(is_published=True).select_related('category')
 
 
 # Create your views here.
@@ -38,13 +38,15 @@ class NewsByCategory(ListView):
     context_object_name = 'news'
     allow_empty = False
 
+    # queryset = News.objects.select_related('category')
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(NewsByCategory, self).get_context_data(**kwargs)
         context['title'] = Category.objects.get(pk=self.kwargs['category_id'])
         return context
 
     def get_queryset(self):
-        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True).select_related('category')
 
 
 # def get_category(request, category_id):
