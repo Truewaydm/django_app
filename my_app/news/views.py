@@ -3,18 +3,23 @@ from django.views.generic import ListView, DetailView, CreateView
 from .models import News, Category
 from .forms import NewsForm
 from django.urls import reverse_lazy
+from .utils import MyMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class HomeNews(ListView):
+class HomeNews(MyMixin, ListView):
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
+    mixin_properties = 'hello world'
 
     # extra_context = {'title': 'Main'}
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(HomeNews, self).get_context_data(**kwargs)
-        context['title'] = 'Main page'
+        # context['title'] = 'Main page'
+        context['title'] = self.get_upper('Main page')
+        context['mixin_properties'] = self.get_properties()
         return context
 
     def get_queryset(self):
@@ -32,7 +37,7 @@ class HomeNews(ListView):
 #     # return render(request, "news/index.html", context)
 #     return render(request, template_name="news/index.html", context=context)
 
-class NewsByCategory(ListView):
+class NewsByCategory(MyMixin, ListView):
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
@@ -42,7 +47,7 @@ class NewsByCategory(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(NewsByCategory, self).get_context_data(**kwargs)
-        context['title'] = Category.objects.get(pk=self.kwargs['category_id'])
+        context['title'] = self.get_upper(Category.objects.get(pk=self.kwargs['category_id']))
         return context
 
     def get_queryset(self):
@@ -68,10 +73,12 @@ class ViewNews(DetailView):
 #     return render(request, 'news/view_news.html', {"news_item": news_item})
 
 
-class CreateNews(CreateView):
+class CreateNews(LoginRequiredMixin, CreateView):
     form_class = NewsForm
     template_name = 'news/add_news.html'
     # success_url = reverse_lazy('home')
+    login_url = '/admin/'
+    raise_exception = True
 
 # def add_news(request):
 #     if request.method == 'POST':
