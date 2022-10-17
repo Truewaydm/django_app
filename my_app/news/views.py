@@ -21,6 +21,7 @@ class HomeNews(MyMixin, ListView):
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
     mixin_properties = 'hello world'
+    paginate_by = 2
 
     # extra_context = {'title': 'Main'}
 
@@ -51,6 +52,7 @@ class NewsByCategory(MyMixin, ListView):
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
     allow_empty = False
+    paginate_by = 2
 
     # queryset = News.objects.select_related('category')
 
