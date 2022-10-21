@@ -13,7 +13,11 @@
             {% endif %}
         </ul>
         <span class="navbar-text">
-        <a href="{% url 'register' %}">Register</a> | <a href="{% url 'login' %}">Login</a>
+            {% if request.user.is_authenticated %}
+                Welcome, {{ user.username }} | <a href="{% url 'logout' %}">Exit</a>
+            {% else %}
+                <a href="{% url 'register' %}">Register</a> | <a href="{% url 'login' %}">Login</a>
+            {% endif %}
       </span>
     </div>
 </nav>
