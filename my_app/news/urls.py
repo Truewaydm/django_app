@@ -3,7 +3,8 @@ from .views import *
 
 urlpatterns = [
     path('register/', register, name='register'),
-    path('login/', login, name='login'),
+    path('login/', user_login, name='login'),
+    path('logout/', user_logout, name='logout'),
     # path('test/', test_pagination_part1, name='test'),
     path('test/', test_sending_email, name='test'),
     # path('', index, name='home'),
