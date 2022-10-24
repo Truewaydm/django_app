@@ -11,10 +11,4 @@ Add news :: {{ block.super }}
 {% block content %}
 <h1>Login</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary btn-block">Login</button>
-</form>
-
 {% endblock %}
