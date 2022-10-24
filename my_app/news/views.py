@@ -1,13 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 from .models import News, Category
-from .forms import NewsForm, UserRegisterForm
+from .forms import NewsForm, UserRegisterForm, ContactForm
 from django.urls import reverse_lazy
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.core.mail import send_mail
 
 
 def register(request):
@@ -28,12 +29,30 @@ def login(request):
     return render(request, 'news/login.html')
 
 
-def test_pagination_part1(request):
-    objects = ['john1', 'paul2', 'george3', 'ringo4', 'john5', 'paul6', 'george7']
-    paginator = Paginator(objects, 2)
-    page_num = request.GET.get('page', 1)
-    page_objects = paginator.get_page(page_num)
-    return render(request, 'news/test.html', {'page_obj': page_objects})
+def test_sending_email(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'dmitry@snov.io',
+                             ['dmitry@snov.io'], fail_silently=True)
+            if mail:
+                messages.success(request, 'Message delivered')
+                return redirect('test')
+            else:
+                messages.error(request, 'Send error')
+        else:
+            messages.error(request, 'Send error')
+    else:
+        form = ContactForm()
+    return render(request, 'news/test.html', {'form': form})
+
+
+# def test_pagination_part1(request):
+#     objects = ['john1', 'paul2', 'george3', 'ringo4', 'john5', 'paul6', 'george7']
+#     paginator = Paginator(objects, 2)
+#     page_num = request.GET.get('page', 1)
+#     page_objects = paginator.get_page(page_num)
+#     return render(request, 'news/test.html', {'page_obj': page_objects})
 
 
 class HomeNews(MyMixin, ListView):
