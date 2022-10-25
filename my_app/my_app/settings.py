@@ -142,8 +142,8 @@ INTERNAL_IPS = [
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '465'
-EMAIL_HOST_USER = 'dmitry@snov.io'
-EMAIL_HOST_PASSWORD = 'jhovcxwpqgyopvsf'
+EMAIL_HOST_USER = 'email'
+EMAIL_HOST_PASSWORD = 'password'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
@@ -217,3 +217,10 @@ CKEDITOR_CONFIGS = {
 CAPTCHA_LETTER_ROTATION = None
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 CAPTCHA_NOISE_FUNCTIONS = None
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
+    }
+}
