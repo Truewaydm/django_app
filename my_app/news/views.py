@@ -43,7 +43,7 @@ def user_logout(request):
     return redirect('login')
 
 
-def test_sending_email(request):
+def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -51,11 +51,11 @@ def test_sending_email(request):
                              ['dmitry@snov.io'], fail_silently=True)
             if mail:
                 messages.success(request, 'Message delivered')
-                return redirect('test')
+                return redirect('contact')
             else:
                 messages.error(request, 'Send error')
         else:
-            messages.error(request, 'Send error')
+            messages.error(request, 'Send validation')
     else:
         form = ContactForm()
     return render(request, 'news/test.html', {'form': form})
