@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'captcha',
     "debug_toolbar",
     'testapp.apps.TestappConfig',
+    'mptt',
 ]
 
 MIDDLEWARE = [
