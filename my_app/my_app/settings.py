@@ -226,3 +226,6 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
     }
 }
+
+# default is 10 pixels https://django-mptt.readthedocs.io/en/latest/admin.html
+MPTT_ADMIN_LEVEL_INDENT = 20
