@@ -1,0 +1,227 @@
+Index: my_app/news/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.urls import path\nfrom .views import *\n\nurlpatterns = [\n    path('', index)\n]\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/my_app/news/urls.py b/my_app/news/urls.py
+--- a/my_app/news/urls.py	(revision 6737809ef8cb284fe34cc3b0e6d9d7cd000edba7)
++++ b/my_app/news/urls.py	(date 1665415337472)
+@@ -2,5 +2,6 @@
+ from .views import *
+ 
+ urlpatterns = [
+-    path('', index)
++    path('', index, name='home'),
++    path('category/<int:category_id>/', get_category, name='category'),
+ ]
+Index: my_app/news/templates/news/index.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!doctype html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n    <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\"\n          integrity=\"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh\" crossorigin=\"anonymous\">\n    <title>{{title}}</title>\n</head>\n<body>\n\n\n<nav class=\"navbar navbar-expand-lg navbar-light bg-light\">\n    <a class=\"navbar-brand\" href=\"/\">Navbar</a>\n    <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\"\n            aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n        <span class=\"navbar-toggler-icon\"></span>\n    </button>\n\n    <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n        <ul class=\"navbar-nav mr-auto\">\n            <li class=\"nav-item\"><a class=\"nav-link\" href=\"/\">Main menu</a></li>\n            <li class=\"nav-item\"><a class=\"nav-link\" href=\"/\">Add News</a></li>\n        </ul>\n    </div>\n</nav>\n\n<div class=\"container mt-3\">\n    <h1>{{title}}</h1>\n    <!--    {{ 5|add:\"2\"}}-->\n    <!--    {{news.count}}-->\n    {{\"123456789\"|filesizeformat}}\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            {% for item in news %}\n            <div class=\"card mb-3\">\n                <div class=\"card-header\">\n                    {{forloop.counter}}\n                    Category: {{item.category}}\n                </div>\n                <div class=\"card-body\">\n                    <div class=\"media\">\n                        {% if item.photo %}\n                        <img src=\"{{ item.photo.url }}\" alt=\"\" width=\"350\" class=\"mr-3\">\n                        {% else %}\n                        <img src=\"https://picsum.photos/id/1060/350/235/?blur=2\" alt=\"\" class=\"mr-3\">\n                        {% endif %}\n                        <div class=\"meida-body\">\n                            <h5 class=\"card-title\">{{item.title}}</h5>\n                            {% autoescape off %}\n                            <p class=\"card-text\">{{item.content|safe|linebreaks|truncatewords:50}}</p>\n                            {% endautoescape %}\n                            <a href=\"#\" class=\"btn btn-primary\">Read more...</a>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"card-footer text-muted\">\n                    {{item.created_at|date:\"Y-m-d H:i:s\"}}\n                    <!--                    {{item.created_at|timesince}}-->\n                </div>\n            </div>\n            {% endfor %}\n        </div>\n    </div>\n</div>\n\n\n<script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\"\n        integrity=\"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\"\n        crossorigin=\"anonymous\"></script>\n<script src=\"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js\"\n        integrity=\"sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo\"\n        crossorigin=\"anonymous\"></script>\n<script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js\"\n        integrity=\"sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6\"\n        crossorigin=\"anonymous\"></script>\n</body>\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/my_app/news/templates/news/index.html b/my_app/news/templates/news/index.html
+--- a/my_app/news/templates/news/index.html	(revision 6737809ef8cb284fe34cc3b0e6d9d7cd000edba7)
++++ b/my_app/news/templates/news/index.html	(date 1665415337472)
+@@ -11,7 +11,7 @@
+ 
+ 
+ <nav class="navbar navbar-expand-lg navbar-light bg-light">
+-    <a class="navbar-brand" href="/">Navbar</a>
++    <a class="navbar-brand" href="{% url 'home' %}">Navbar</a>
+     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+@@ -19,8 +19,8 @@
+ 
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+         <ul class="navbar-nav mr-auto">
+-            <li class="nav-item"><a class="nav-link" href="/">Main menu</a></li>
+-            <li class="nav-item"><a class="nav-link" href="/">Add News</a></li>
++            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Main menu</a></li>
++            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Add News</a></li>
+         </ul>
+     </div>
+ </nav>
+@@ -31,12 +31,21 @@
+     <!--    {{news.count}}-->
+     {{"123456789"|filesizeformat}}
+     <div class="row">
+-        <div class="col-md-12">
++
++        <div class="col-md-3">
++            <div class="list-group">
++                {% for item in categories %}
++                <a href="{% url 'category' item.pk %}" class="list-group-item list-group-item-action">{{item.title}}</a>
++                {% endfor %}
++            </div>
++        </div>
++
++        <div class="col-md-9">
+             {% for item in news %}
+             <div class="card mb-3">
+                 <div class="card-header">
+                     {{forloop.counter}}
+-                    Category: {{item.category}}
++                    Category: <a href="{% url 'category' item.category.pk %}">{{item.category}}</a>
+                 </div>
+                 <div class="card-body">
+                     <div class="media">
+Index: my_app/news/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.shortcuts import render\nfrom django.http import HttpResponse\nfrom .models import News\n\n\n# Create your views here.\n\ndef index(request):\n    news = News.objects.all()\n    # news = News.objects.order_by(\"-created_at\")\n    context: dict = {\"news\": news, \"title\": \"List of News\"}\n    # return render(request, \"news/index.html\", context)\n    return render(request, template_name=\"news/index.html\", context=context)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/my_app/news/views.py b/my_app/news/views.py
+--- a/my_app/news/views.py	(revision 6737809ef8cb284fe34cc3b0e6d9d7cd000edba7)
++++ b/my_app/news/views.py	(date 1665415337472)
+@@ -1,13 +1,24 @@
+ from django.shortcuts import render
+ from django.http import HttpResponse
+-from .models import News
++from .models import News, Category
+ 
+ 
+ # Create your views here.
+-
+ def index(request):
+     news = News.objects.all()
++    categories = Category.objects.all()
+     # news = News.objects.order_by("-created_at")
+-    context: dict = {"news": news, "title": "List of News"}
++    context: dict = {
++        "news": news,
++        "title": "List of News",
++        "categories": categories,
++    }
+     # return render(request, "news/index.html", context)
+     return render(request, template_name="news/index.html", context=context)
++
++
++def get_category(request, category_id):
++    news = News.objects.filter(category_id=category_id)
++    categories = Category.objects.all()
++    category = Category.objects.get(pk=category_id)
++    return render(request, 'news/category.html', {'news': news, 'categories': categories, 'category': category})
+Index: my_app/news/templates/news/category.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/my_app/news/templates/news/category.html b/my_app/news/templates/news/category.html
+new file mode 100644
+--- /dev/null	(date 1665415337472)
++++ b/my_app/news/templates/news/category.html	(date 1665415337472)
+@@ -0,0 +1,87 @@
++<!doctype html>
++<html lang="en">
++<head>
++    <meta charset="utf-8">
++    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
++    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
++          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
++    <title>{{category.title}}</title>
++</head>
++<body>
++
++
++<nav class="navbar navbar-expand-lg navbar-light bg-light">
++    <a class="navbar-brand" href="{% url 'home' %}">Navbar</a>
++    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
++            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
++        <span class="navbar-toggler-icon"></span>
++    </button>
++
++    <div class="collapse navbar-collapse" id="navbarSupportedContent">
++        <ul class="navbar-nav mr-auto">
++            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Main menu</a></li>
++            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Add News</a></li>
++        </ul>
++    </div>
++</nav>
++
++<div class="container mt-3">
++    <h1>{{title}}</h1>
++    <!--    {{ 5|add:"2"}}-->
++    <!--    {{news.count}}-->
++    {{"123456789"|filesizeformat}}
++    <div class="row">
++
++        <div class="col-md-3">
++            <div class="list-group">
++                {% for item in categories %}
++                <a href="{% url 'category' item.pk %}" class="list-group-item list-group-item-action">{{item.title}}</a>
++                {% endfor %}
++            </div>
++        </div>
++
++        <div class="col-md-9">
++            {% for item in news %}
++            <div class="card mb-3">
++                <div class="card-header">
++                    {{forloop.counter}}
++                    Category: {{item.category}}
++                </div>
++                <div class="card-body">
++                    <div class="media">
++                        {% if item.photo %}
++                        <img src="{{ item.photo.url }}" alt="" width="350" class="mr-3">
++                        {% else %}
++                        <img src="https://picsum.photos/id/1060/350/235/?blur=2" alt="" class="mr-3">
++                        {% endif %}
++                        <div class="meida-body">
++                            <h5 class="card-title">{{item.title}}</h5>
++                            {% autoescape off %}
++                            <p class="card-text">{{item.content|safe|linebreaks|truncatewords:50}}</p>
++                            {% endautoescape %}
++                            <a href="#" class="btn btn-primary">Read more...</a>
++                        </div>
++                    </div>
++                </div>
++                <div class="card-footer text-muted">
++                    {{item.created_at|date:"Y-m-d H:i:s"}}
++                    <!--                    {{item.created_at|timesince}}-->
++                </div>
++            </div>
++            {% endfor %}
++        </div>
++    </div>
++</div>
++
++
++<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
++        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
++        crossorigin="anonymous"></script>
++<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
++        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
++        crossorigin="anonymous"></script>
++<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
++        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
++        crossorigin="anonymous"></script>
++</body>
++</html>
+\ No newline at end of file
+Index: my_app/my_app/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\"\"\"my_app URL Configuration\n\nThe `urlpatterns` list routes URLs to views. For more information please see:\n    https://docs.djangoproject.com/en/3.2/topics/http/urls/\nExamples:\nFunction views\n    1. Add an import:  from my_app import views\n    2. Add a URL to urlpatterns:  path('', views.home, name='home')\nClass-based views\n    1. Add an import:  from other_app.views import Home\n    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')\nIncluding another URLconf\n    1. Import the include() function: from django.urls import include, path\n    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))\n\"\"\"\nfrom django.conf import settings\nfrom django.conf.urls.static import static\nfrom django.contrib import admin\nfrom django.urls import path, include\n\nurlpatterns = [\n    path('admin/', admin.site.urls),\n    path('news/', include('news.urls')),\n]\n\n# IN DEBUG django take media files\nif settings.DEBUG:\n    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/my_app/my_app/urls.py b/my_app/my_app/urls.py
+--- a/my_app/my_app/urls.py	(revision 6737809ef8cb284fe34cc3b0e6d9d7cd000edba7)
++++ b/my_app/my_app/urls.py	(date 1665415337472)
+@@ -20,7 +20,7 @@
+ 
+ urlpatterns = [
+     path('admin/', admin.site.urls),
+-    path('news/', include('news.urls')),
++    path('', include('news.urls')),
+ ]
+ 
+ # IN DEBUG django take media files
