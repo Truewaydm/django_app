@@ -47,8 +47,8 @@ def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'dmitry@snov.io',
-                             ['dmitry@snov.io'], fail_silently=True)
+            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'dim8035@gmail.com',
+                             ['dim8035@gmail.com'], fail_silently=True)
             if mail:
                 messages.success(request, 'Message delivered')
                 return redirect('contact')
