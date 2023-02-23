@@ -4,4 +4,4 @@ venv/
 .venv
 __pycache__/
 *.__pycache__/
-django_cache
+django_cache/
