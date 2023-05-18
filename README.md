@@ -1,6 +1,6 @@
 ## Tutorial to creating application use django
 
-### Project Setup
+### Project run
 ```sh
 docker-compose up
 ```
