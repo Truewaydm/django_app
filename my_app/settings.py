@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os.path
 from pathlib import Path
+import socket
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +25,7 @@ SECRET_KEY = 'django-insecure-0^h#k^csglxl$$^v7)#8$xvy#3$$v^2@8s!rylkjpgk^^8ii-h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'captcha',
-    "debug_toolbar",
+    'debug_toolbar',
     'testapp.apps.TestappConfig',
     'mptt',
 ]
@@ -141,6 +142,9 @@ MEDIA_URL = '/media/'
 INTERNAL_IPS = [
     "127.0.0.1"
 ]
+# https://knasmueller.net/fix-djangos-debug-toolbar-not-showing-inside-docker
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '465'
